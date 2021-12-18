@@ -7,6 +7,16 @@ public class Artist {
     private Integer hour;
     private Integer minute;
 
+    public Artist() {
+    }
+
+    public Artist(String event, String artist, Integer hour, Integer minute) {
+        this.event = event;
+        this.artist = artist;
+        this.hour = hour;
+        this.minute = minute;
+    }
+
     public String getId() {
         return id;
     }

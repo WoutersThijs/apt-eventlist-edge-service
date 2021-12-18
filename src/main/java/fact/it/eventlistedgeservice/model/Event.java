@@ -5,6 +5,14 @@ public class Event {
     private String eventName;
     private String organiser;
 
+    public Event() {
+    }
+
+    public Event(String eventName, String organiser) {
+        setEventName(eventName);
+        setOrganiser(organiser);
+    }
+
     public String getId() {
         return id;
     }
