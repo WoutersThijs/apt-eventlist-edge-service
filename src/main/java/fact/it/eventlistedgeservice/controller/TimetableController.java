@@ -4,6 +4,7 @@ import fact.it.eventlistedgeservice.model.Artist;
 import fact.it.eventlistedgeservice.model.Event;
 import fact.it.eventlistedgeservice.model.FilledEventArtist;
 import fact.it.eventlistedgeservice.model.Timetable;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -52,5 +53,26 @@ public class TimetableController {
         ResponseEntity<List<Artist>> responseEntityArtists = restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/event/{eventName}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>(){}, eventName);
 
         return new Timetable(event, responseEntityArtists.getBody());
+    }
+
+    @GetMapping("/eventlists/organizer/{organizer}")
+    public List<Timetable> getEventlistsByOrganizer(@PathVariable String organizer){
+        List<Timetable> returnList = new ArrayList();
+
+        ResponseEntity<List<Event>> responseEntityEvents =
+                restTemplate.exchange("http://" + eventServiceBaseUrl + "/events/organisator/{organisator}",
+                    HttpMethod.GET, null, new ParameterizedTypeReference<List<Event>>(){
+                    }, organizer);
+
+        List<Event> events = responseEntityEvents.getBody();
+
+        for(Event event : events){
+            Artist artist = restTemplate.getForObject("http://" + artistServiceBaseUrl + "/artists/event/{eventName}",
+                Artist.class, event.getEventName());
+
+            returnList.add(new Timetable(event, artist));
+        }
+
+        return returnList;
     }
 }

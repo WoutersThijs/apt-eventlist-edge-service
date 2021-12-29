@@ -25,6 +25,17 @@ public class Timetable {
         setArtists(artists);
     }
 
+    public Timetable(Event event, Artist artist){
+        setEventName(event.getEventName());
+        setOrganiser(event.getOrganiser());
+
+        artists = new ArrayList<>();
+
+        artists.add(artist);
+
+        setArtists(artists);
+    }
+
     public String getEventName() {
         return eventName;
     }
