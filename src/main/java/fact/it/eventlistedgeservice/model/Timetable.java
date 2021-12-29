@@ -5,12 +5,12 @@ import java.util.List;
 
 public class Timetable {
     private String eventName;
-    private String organiser;
+    private String organizer;
     private List<Artist> artists;
 
     public Timetable(Event event, List<Artist> tempArtists){
         setEventName(event.getEventName());
-        setOrganiser(event.getOrganiser());
+        setOrganizer(event.getOrganizer());
 
         artists = new ArrayList<>();
 
@@ -27,7 +27,7 @@ public class Timetable {
 
     public Timetable(Event event, Artist artist){
         setEventName(event.getEventName());
-        setOrganiser(event.getOrganiser());
+        setOrganizer(event.getOrganizer());
 
         artists = new ArrayList<>();
 
@@ -44,12 +44,12 @@ public class Timetable {
         this.eventName = eventName;
     }
 
-    public String getOrganiser() {
-        return organiser;
+    public String getOrganizer() {
+        return organizer;
     }
 
-    public void setOrganiser(String organiser) {
-        this.organiser = organiser;
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 
     public List<Artist> getArtists() {

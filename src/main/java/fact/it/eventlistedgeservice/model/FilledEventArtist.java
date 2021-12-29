@@ -5,12 +5,12 @@ import java.util.List;
 
 public class FilledEventArtist {
     private String eventName;
-    private String organiser;
+    private String organizer;
     private List<Artist> artists;
 
     public FilledEventArtist(Event event, List<Artist> tempArtists){
         setEventName(event.getEventName());
-        setOrganiser(event.getOrganiser());
+        setOrganizer(event.getOrganizer());
 
         artists = new ArrayList<>();
 
@@ -33,12 +33,12 @@ public class FilledEventArtist {
         this.eventName = eventName;
     }
 
-    public String getOrganiser() {
-        return organiser;
+    public String getOrganizer() {
+        return organizer;
     }
 
-    public void setOrganiser(String organiser) {
-        this.organiser = organiser;
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 
     public List<Artist> getArtists() {

@@ -3,14 +3,14 @@ package fact.it.eventlistedgeservice.model;
 public class Event {
     private String id;
     private String eventName;
-    private String organiser;
+    private String organizer;
 
     public Event() {
     }
 
-    public Event(String eventName, String organiser) {
+    public Event(String eventName, String organizer) {
         setEventName(eventName);
-        setOrganiser(organiser);
+        setOrganizer(organizer);
     }
 
     public String getId() {
@@ -29,11 +29,11 @@ public class Event {
         this.eventName = eventName;
     }
 
-    public String getOrganiser() {
-        return organiser;
+    public String getOrganizer() {
+        return organizer;
     }
 
-    public void setOrganiser(String organiser) {
-        this.organiser = organiser;
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 }
