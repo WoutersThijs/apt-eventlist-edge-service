@@ -3,12 +3,12 @@ package fact.it.eventlistedgeservice.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Timetable {
+public class FilledEventArtist {
     private String eventName;
     private String organiser;
     private List<Artist> artists;
 
-    public Timetable(Event event, List<Artist> tempArtists){
+    public FilledEventArtist(Event event, List<Artist> tempArtists){
         setEventName(event.getEventName());
         setOrganiser(event.getOrganiser());
 
@@ -21,17 +21,6 @@ public class Timetable {
                     artist.getHour(),
                     artist.getMinute()));
         });
-
-        setArtists(artists);
-    }
-
-    public Timetable(Event event, Artist artist){
-        setEventName(event.getEventName());
-        setOrganiser(event.getOrganiser());
-
-        artists = new ArrayList<>();
-
-        artists.add(artist);
 
         setArtists(artists);
     }
