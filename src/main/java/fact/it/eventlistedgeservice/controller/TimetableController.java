@@ -60,7 +60,7 @@ public class TimetableController {
         List<Timetable> returnList = new ArrayList();
 
         ResponseEntity<List<Event>> responseEntityEvents =
-                restTemplate.exchange("http://" + eventServiceBaseUrl + "/events/organisator/{organisator}",
+                restTemplate.exchange("http://" + eventServiceBaseUrl + "/events/organizer/{organizer}",
                     HttpMethod.GET, null, new ParameterizedTypeReference<List<Event>>(){
                     }, organizer);
 
