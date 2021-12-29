@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -74,5 +72,44 @@ public class TimetableController {
         }
 
         return returnList;
+    }
+
+    @GetMapping("/eventlists/{artist}")
+    public List<Timetable> getEventlistsByArtist(@PathVariable String artist){
+        List<Timetable> returnList = new ArrayList();
+        ResponseEntity<List<Artist>> responseEntityArtists = restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/{artist}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>(){}, artist);
+        List<Artist> artists = responseEntityArtists.getBody();
+        for (Artist artist1: artists){
+            Event event = restTemplate.getForObject("http://" + eventServiceBaseUrl + "/events/{eventName}", Event.class, artist1.getEvent());
+            returnList.add(new Timetable(event, artist1));
+        }
+        return returnList;
+    }
+
+    @PostMapping("/eventlists")
+    public Timetable addEventlist(@RequestParam String eventName, @RequestParam(required = false) String organizer, @RequestParam(required = false) String artistName, @RequestParam Integer hour, @RequestParam Integer minute){
+        Event eventTest = restTemplate.getForObject("http://" + eventServiceBaseUrl + "/events/{eventName}", Event.class, eventName);
+        if(eventTest == null){
+            if (organizer == null){
+                organizer = "TBA";
+            }
+            restTemplate.postForObject("http://" + eventServiceBaseUrl + "/events", new Event(eventName, organizer), Event.class);
+        }
+        Event event = restTemplate.getForObject("http://" + eventServiceBaseUrl + "/events/{eventName}", Event.class, eventName);
+        if(artistName == null){
+            artistName = "TBA";
+        }
+        Artist artist = restTemplate.postForObject("http://" + artistServiceBaseUrl + "/artists", new Artist(eventName, artistName, hour, minute), Artist.class);
+        return new Timetable(event, artist);
+    }
+
+//    @PutMapping("/eventlists")
+
+    @DeleteMapping("eventlists/{artistName}/event/{eventName}")
+    public ResponseEntity deleteEventlist(@PathVariable String eventName, @PathVariable String artistName){
+        restTemplate.delete("http://" + eventServiceBaseUrl + "/events/event/" + eventName);
+        restTemplate.delete("http://" + artistServiceBaseUrl + "/artists/" + artistName + "/event/" + eventName);
+
+        return ResponseEntity.ok().build();
     }
 }
