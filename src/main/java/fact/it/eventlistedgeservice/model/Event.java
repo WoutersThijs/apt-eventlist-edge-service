@@ -1,5 +1,7 @@
 package fact.it.eventlistedgeservice.model;
 
+import org.springframework.http.HttpEntity;
+
 public class Event {
     private String id;
     private String eventName;

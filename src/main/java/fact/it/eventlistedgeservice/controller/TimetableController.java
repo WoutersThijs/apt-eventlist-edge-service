@@ -2,9 +2,7 @@ package fact.it.eventlistedgeservice.controller;
 
 import fact.it.eventlistedgeservice.model.Artist;
 import fact.it.eventlistedgeservice.model.Event;
-import fact.it.eventlistedgeservice.model.FilledEventArtist;
 import fact.it.eventlistedgeservice.model.Timetable;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,8 +27,8 @@ public class TimetableController {
     private String artistServiceBaseUrl;
 
     @GetMapping("/eventlists")
-    public List<FilledEventArtist> getEventList(){
-        List<FilledEventArtist> returnList = new ArrayList<>();
+    public List<Timetable> getEventList(){
+        List<Timetable> returnList = new ArrayList<>();
 
         ResponseEntity<List<Event>> responseEntityEvents =
                 restTemplate.exchange("http://" + eventServiceBaseUrl + "/events",
@@ -40,9 +38,17 @@ public class TimetableController {
         List<Event> events = responseEntityEvents.getBody();
 
         for(Event event : events){
-
+            ResponseEntity<List<Artist>> responseEntityArtists =  restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/event/" + event.getEventName() ,
+                    HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>() {
+                    });
+            List<Artist> artists = responseEntityArtists.getBody();
+            for(Artist artist: artists){
+                Artist artistSingle = restTemplate.getForObject("http://" + artistServiceBaseUrl + "/artists/"+ artist.getArtist() +"/event/{eventName}",
+                        Artist.class, artist.getEvent());
+                returnList.add(new Timetable(event, artistSingle));
+            }
         }
-        return null;
+        return returnList;
     }
 
     @GetMapping("/eventlists/event/{eventName}")
