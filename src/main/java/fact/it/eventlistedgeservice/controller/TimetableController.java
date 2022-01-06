@@ -38,15 +38,8 @@ public class TimetableController {
         List<Event> events = responseEntityEvents.getBody();
 
         for(Event event : events){
-            ResponseEntity<List<Artist>> responseEntityArtists =  restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/event/" + event.getEventName() ,
-                    HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>() {
-                    });
-            List<Artist> artists = responseEntityArtists.getBody();
-            for(Artist artist: artists){
-                Artist artistSingle = restTemplate.getForObject("http://" + artistServiceBaseUrl + "/artists/"+ artist.getArtist() +"/event/{eventName}",
-                        Artist.class, artist.getEvent());
-                returnList.add(new Timetable(event, artistSingle));
-            }
+            ResponseEntity<List<Artist>> responseEntityArtists = restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/event/{eventName}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>(){}, event.getEventName());
+            returnList.add(new Timetable(event, responseEntityArtists.getBody()));
         }
         return returnList;
     }
