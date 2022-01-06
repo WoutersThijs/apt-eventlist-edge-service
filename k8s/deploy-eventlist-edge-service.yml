@@ -27,9 +27,9 @@ spec:
               memory: "200Mi"
           env:                    # Environment variables supplied to the Pod
             - name: ARTIST_SERVICE_BASEURL
-              value: "https://artist-service-server-woutersthijs.cloud.okteto.net"
+              value: "artist-service-server-woutersthijs.cloud.okteto.net"
             - name: EVENT_SERVICE_BASEURL
-              value: "https://event-service-server-r0790225.cloud.okteto.net"
+              value: "event-service-server-r0790225.cloud.okteto.net"
 ---
 apiVersion: v1                # API version
 kind: Service                 # Type of the kubernetes resource
