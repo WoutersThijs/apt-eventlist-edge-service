@@ -27,9 +27,9 @@ spec:
               memory: "200Mi"
           env:                    # Environment variables supplied to the Pod
             - name: ARTIST_SERVICE_BASEURL
-              value: "artist-service-server:8052"
+              value: ""
             - name: EVENT_SERVICE_BASEURL
-              value: "event-service-server:8051"
+              value: ""
 ---
 apiVersion: v1                # API version
 kind: Service                 # Type of the kubernetes resource
