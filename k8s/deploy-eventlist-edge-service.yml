@@ -1,1 +1,47 @@
-
+apiVersion: apps/v1                          # API version
+kind: Deployment                             # Type of kubernetes resource
+metadata:
+  name: eventlist-edge-service-server-deployment # Name of the deployment
+  labels:                                    # Labels that will be applied to this deployment
+    app: eventlist-edge-service-server
+spec:
+  replicas: 1                 # No. of replicas/pods to run in this deployment
+  selector:
+    matchLabels:              # The deployment applies to any pods matching the specified labels
+      app: eventlist-edge-service-server
+  template:                   # Template for creating the pods in this deployment
+    metadata:
+      labels:                 # Labels that will be applied to each Pod in this deployment
+        app: eventlist-edge-service-server
+    spec:                     # Spec for the containers that will be run in the Pods
+      containers:
+        - name: eventlist-edge-service-server
+          image: woutersthijs/eventlist-edge-service
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8050 # The port that the container exposes
+          resources:
+            limits:
+              cpu: 0.2
+              memory: "200Mi"
+          env:                    # Environment variables supplied to the Pod
+            - name: ARTIST_SERVICE_BASEURL
+              value: "https://artist-service-server-woutersthijs.cloud.okteto.net"
+            - name: EVENT_SERVICE_BASEURL
+              value: "https://event-service-server-r0790225.cloud.okteto.net"
+---
+apiVersion: v1                # API version
+kind: Service                 # Type of the kubernetes resource
+metadata:
+  name: eventlist-edge-service-server    # Name of the service
+  labels:                            # Labels that will be applied to this service
+    app: eventlist-edge-service-server
+spec:
+  type: NodePort                     # The service will be exposed by opening a Port on each node and proxying it. Allowing connections from outside the cluster
+  selector:
+    app: eventlist-edge-service-server   # The service exposes Pods with label `app=eventlist-edge-service-server`
+  ports:                             # Forward incoming connections on port 8080 to the target port 8050
+    - name: http
+      port: 8050
+      targetPort: 8050
