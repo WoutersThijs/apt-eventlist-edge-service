@@ -16,3 +16,12 @@ Op de edge service komen deze 2 back-end services samen om een volledige timetab
 ## Postman Requests on Edge
 ### GET /eventlists
 ![APT GET /Eventlists](src/assets/APTGETEventlists.png)
+
+### GET /eventlists/artist/Artist1
+![APT GET /Eventlists/artist/Artist1](src/assets/APTGETEventlistsArtistArtist1.png)
+
+### GET /eventlists/event/Event1
+![APT GET /Eventlists/artist/Artist1](src/assets/APTGETEventlistsEventEvent1.png)
+
+### GET /eventlists/organizer/Organizer2
+![APT GET /Eventlists/artist/Artist1](src/assets/APTGETEventlistsOrganizerOrganizer2.png)
