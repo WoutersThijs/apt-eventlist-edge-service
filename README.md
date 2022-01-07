@@ -12,3 +12,7 @@ Op de edge service komen deze 2 back-end services samen om een volledige timetab
 
 ## Swagger UI
 ![APT SwaggerUI](src/assets/APTSwagger.png)
+
+## Postman Requests on Edge
+### GET /eventlists
+![APT GET /Eventlists](src/assets/APTGETEventlists.png)
