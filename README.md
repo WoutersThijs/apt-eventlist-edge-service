@@ -9,3 +9,6 @@ Op de edge service komen deze 2 back-end services samen om een volledige timetab
 - Event-service: [https://github.com/WoutersThijs/apt-event-service](https://github.com/WoutersThijs/apt-event-service)
 - Artist-service: [https://github.com/WoutersThijs/apt-artist-service](https://github.com/WoutersThijs/apt-artist-service)
 ![APT Diagram](src/assets/APTDiagram.png)
+
+## Swagger UI
+![APT SwaggerUI](src/assets/APTSwaggerUI.png)
