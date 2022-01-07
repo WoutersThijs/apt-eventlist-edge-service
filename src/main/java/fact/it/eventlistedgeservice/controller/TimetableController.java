@@ -87,6 +87,9 @@ public class TimetableController {
     @PostMapping("/eventlists")
     public Timetable addEventlist(@RequestParam String eventName, @RequestParam String organizer, @RequestParam String artistName, @RequestParam Integer hour, @RequestParam Integer minute){
         Event event = restTemplate.getForObject("http://" + eventServiceBaseUrl + "/events/{eventName}", Event.class, eventName);
+        if(event == null){
+            event = restTemplate.postForObject("http://" + eventServiceBaseUrl + "/events", new Event(eventName, organizer), Event.class);
+        }
         Artist artist = restTemplate.postForObject("http://" + artistServiceBaseUrl + "/artists", new Artist(eventName, artistName, hour, minute), Artist.class);
         return new Timetable(event, artist);
     }

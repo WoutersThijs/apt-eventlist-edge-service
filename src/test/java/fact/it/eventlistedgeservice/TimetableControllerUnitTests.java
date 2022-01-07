@@ -52,6 +52,7 @@ public class TimetableControllerUnitTests {
 
     private Event event1 = new Event("Event1", "Organizer1");
     private Event event2 = new Event("Event2", "Organizer2");
+    private Event event3 = new Event("Event3", "Organizer3");
 
     private Artist artist1Event1 = new Artist("Event1", "Artist1",21, 0);
     private Artist artist1Event2 = new Artist("Event2", "Artist1",0, 0);
@@ -226,15 +227,22 @@ public class TimetableControllerUnitTests {
     @Test
     public void whenAddEventlist_thenReturnTimetableJson() throws Exception {
 
-        Artist artist2Event2 = new Artist("Event2","Artist2", 1, 30);
+        Artist artist1Event3 = new Artist("Event3","Artist1", 1, 30);
 
         // GET Event2 info
-        mockServer.expect(ExpectedCount.twice(),
-                requestTo(new URI("http://" + eventServiceBaseUrl + "/events/Event2")))
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + eventServiceBaseUrl + "/events/Event3")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(mapper.writeValueAsString(event2))
+                );
+
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI("http://" + eventServiceBaseUrl + "/events")))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(event3))
                 );
 
         // POST timetable for Artist at Event 2
@@ -243,21 +251,21 @@ public class TimetableControllerUnitTests {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(mapper.writeValueAsString(artist2Event2))
+                        .body(mapper.writeValueAsString(artist1Event3))
                 );
 
         mockMvc.perform(post("/eventlists")
-                .param("eventName", artist2Event2.getEvent())
-                        .param("organizer", "Organizer2")
-                .param("artistName", artist2Event2.getArtist())
-                .param("hour", artist2Event2.getHour().toString())
-                .param("minute", artist2Event2.getMinute().toString())
+                .param("eventName", artist1Event3.getEvent())
+                        .param("organizer", "Organizer3")
+                .param("artistName", artist1Event3.getArtist())
+                .param("hour", artist1Event3.getHour().toString())
+                .param("minute", artist1Event3.getMinute().toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.eventName", is("Event2")))
-                .andExpect(jsonPath("$.artists[0].event", is("Event2")))
-                .andExpect(jsonPath("$.artists[0].artist", is("Artist2")))
+                .andExpect(jsonPath("$.eventName", is("Event3")))
+                .andExpect(jsonPath("$.artists[0].event", is("Event3")))
+                .andExpect(jsonPath("$.artists[0].artist", is("Artist1")))
                 .andExpect(jsonPath("$.artists[0].hour", is(1)))
                 .andExpect(jsonPath("$.artists[0].minute", is(30)));
     }
