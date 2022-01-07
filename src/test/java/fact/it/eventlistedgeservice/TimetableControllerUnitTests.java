@@ -248,7 +248,8 @@ public class TimetableControllerUnitTests {
 
         mockMvc.perform(post("/eventlists")
                 .param("eventName", artist2Event2.getEvent())
-                .param("artist", artist2Event2.getArtist())
+                        .param("organizer", "Organizer2")
+                .param("artistName", artist2Event2.getArtist())
                 .param("hour", artist2Event2.getHour().toString())
                 .param("minute", artist2Event2.getMinute().toString())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -310,13 +311,6 @@ public class TimetableControllerUnitTests {
     @Test
     public void whenDeleteEventlist_thenReturnStatusOk() throws Exception {
 
-        // DELETE eventlisting from Artist DB & Event DB
-        mockServer.expect(ExpectedCount.once(),
-                requestTo(new URI("http://" + eventServiceBaseUrl + "/events/event/EventTBD")))
-                .andExpect(method(HttpMethod.DELETE))
-                .andRespond(withStatus(HttpStatus.OK)
-                );
-
         mockServer.expect(ExpectedCount.once(),
                 requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/ArtistTBD/event/EventTBD")))
                 .andExpect(method(HttpMethod.DELETE))
@@ -324,8 +318,20 @@ public class TimetableControllerUnitTests {
                 );
 
 
-        mockMvc.perform(delete("/eventlists/{artistName}/event/{eventName}", "ArtistTBD", "EventTBD"))
+        mockMvc.perform(delete("/eventlists/artist/{artistName}/event/{eventName}", "ArtistTBD", "EventTBD"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenDeleteEvent_thenReturnStatusOk() throws Exception{
+        mockServer.expect(ExpectedCount.once(),
+                        requestTo(new URI("http://" + eventServiceBaseUrl + "/events/event/EventTBD")))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.OK)
+                );
+        mockMvc.perform(delete("/eventlists/event/{eventName}", "EventTBD"))
+                .andExpect(status().isOk());
+
     }
 
 }

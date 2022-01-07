@@ -109,11 +109,17 @@ public class TimetableController {
         return new Timetable(event, retrievedArtist);
     }
 
-    @DeleteMapping("eventlists/{artistName}/event/{eventName}")
+    @DeleteMapping("eventlists/artist/{artistName}/event/{eventName}")
     public ResponseEntity deleteEventlist(@PathVariable String eventName, @PathVariable String artistName){
-        restTemplate.delete("http://" + eventServiceBaseUrl + "/events/event/" + eventName);
         restTemplate.delete("http://" + artistServiceBaseUrl + "/artists/" + artistName + "/event/" + eventName);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("eventlists/event/{eventName}")
+    public ResponseEntity deleteEvent(@PathVariable String eventName){
+        restTemplate.delete("http://" + eventServiceBaseUrl + "/events/event/" + eventName);
 
         return ResponseEntity.ok().build();
+
     }
 }
