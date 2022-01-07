@@ -61,11 +61,122 @@ public class TimetableControllerUnitTests {
     private List<Artist> allArtistsForEvent2 = Arrays.asList(artist1Event2);
     private List<Artist> allEventsForArtist1 = Arrays.asList(artist1Event1, artist1Event2);
     private List<Event> allEvents = Arrays.asList(event1, event2);
+    private List<Event> allEventsForOrganizer1 = Arrays.asList(event1);
 
     @BeforeEach
     public void initializeMockserver() throws URISyntaxException, JsonProcessingException {
         mockServer = MockRestServiceServer.createServer(restTemplate);
 
+    }
+
+    @Test
+    public void whenGetEventlists_thenReturnTimetableJson() throws Exception {
+
+        // GET all events
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + eventServiceBaseUrl + "/events")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(allEvents))
+                );
+
+        // GET all artists for Event1
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/event/Event1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(allArtistsForEvent1))
+                );
+
+        // GET all artists for Event2
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/event/Event2")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(allArtistsForEvent2))
+                );
+
+        mockMvc.perform(get("/eventlists"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].eventName", is("Event1")))
+                .andExpect(jsonPath("$[0].organizer", is("Organizer1")))
+                .andExpect(jsonPath("$[0].artists[0].event", is("Event1")))
+                .andExpect(jsonPath("$[0].artists[0].artist", is("Artist1")))
+                .andExpect(jsonPath("$[1].eventName", is("Event2")))
+                .andExpect(jsonPath("$[1].organizer", is("Organizer2")))
+                .andExpect(jsonPath("$[1].artists[0].event", is("Event2")))
+                .andExpect(jsonPath("$[1].artists[0].artist", is("Artist1")));
+
+    }
+
+    @Test
+    public void whenGetEventlistsByEventName_thenReturnTimetableJson() throws Exception {
+        // GET Events by name 'Event1'
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + eventServiceBaseUrl + "/events/Event1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(event1))
+                );
+
+        // GET artists from event 1
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/event/Event1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(allArtistsForEvent1))
+                );
+
+        mockMvc.perform(get("/eventlists/event/{eventName}", "Event1"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.artists", hasSize(2)))
+                .andExpect(jsonPath("$.eventName", is("Event1")))
+                .andExpect(jsonPath("$.organizer", is("Organizer1")))
+                .andExpect(jsonPath("$.artists[0].artist", is("Artist1")))
+                .andExpect(jsonPath("$.artists[0].event", is("Event1")))
+                .andExpect(jsonPath("$.artists[0].hour", is(21)))
+                .andExpect(jsonPath("$.artists[0].minute", is(0)))
+                .andExpect(jsonPath("$.artists[1].artist", is("Artist2")))
+                .andExpect(jsonPath("$.artists[1].event", is("Event1")))
+                .andExpect(jsonPath("$.artists[1].hour", is(22)))
+                .andExpect(jsonPath("$.artists[1].minute", is(30)));
+    }
+
+    @Test
+    public void whenGetEventlistsByOrganizer_thenReturnTimetableJson() throws Exception {
+
+        // GET Events by organizer 'Organizer1'
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + eventServiceBaseUrl + "/events/organizer/Organizer1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(allEventsForOrganizer1))
+                );
+
+        // GET artists from event 1
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/event/Event1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(allArtistsForEvent1))
+                );
+
+        mockMvc.perform(get("/eventlists/organizer/{organizer}", "Organizer1"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].eventName", is("Event1")))
+                .andExpect(jsonPath("$[0].organizer", is("Organizer1")));
     }
 
     @Test
@@ -112,50 +223,6 @@ public class TimetableControllerUnitTests {
                 .andExpect(jsonPath("$[1].artists[0].artist", is("Artist1")));
     }
 
-//     @Test
-//     public void whenGetEventlistsByEventName_thenReturnTimetableJson() throws Exception {
-
-//         // GET Books by Title 'Book'
-//         mockServer.expect(ExpectedCount.once(),
-//                 requestTo(new URI("http://" + eventServiceBaseUrl + "/events")))
-//                 .andExpect(method(HttpMethod.GET))
-//                 .andRespond(withStatus(HttpStatus.OK)
-//                         .contentType(MediaType.APPLICATION_JSON)
-//                         .body(mapper.writeValueAsString(allEvents))
-//                 );
-
-//         // GET all artists for Event1
-//         mockServer.expect(ExpectedCount.once(),
-//                 requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/event/Event1")))
-//                 .andExpect(method(HttpMethod.GET))
-//                 .andRespond(withStatus(HttpStatus.OK)
-//                         .contentType(MediaType.APPLICATION_JSON)
-//                         .body(mapper.writeValueAsString(allArtistsForEvent1))
-//                 );
-
-//         // GET all artists for Event2
-//         mockServer.expect(ExpectedCount.once(),
-//                 requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/event/Event2")))
-//                 .andExpect(method(HttpMethod.GET))
-//                 .andRespond(withStatus(HttpStatus.OK)
-//                         .contentType(MediaType.APPLICATION_JSON)
-//                         .body(mapper.writeValueAsString(allArtistsForEvent2))
-//                 );
-
-//         mockMvc.perform(get("/eventlists"))
-//                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$", hasSize(3)))
-//                 .andExpect(jsonPath("$[0].eventName", is("Event1")))
-//                 .andExpect(jsonPath("$[0].organizer", is("Organizer1")))
-//                 .andExpect(jsonPath("$[0].artists[0].event", is("Event1")))
-//                 .andExpect(jsonPath("$[0].artists[0].artist", is("Artist1")))
-//                 .andExpect(jsonPath("$[1].eventName", is("Event2")))
-//                 .andExpect(jsonPath("$[1].organizer", is("Organizer2")))
-//                 .andExpect(jsonPath("$[1].artists[0].event", is("Event2")))
-//                 .andExpect(jsonPath("$[1].artists[0].artist", is("Artist1")));
-
-//     }
     @Test
     public void whenAddEventlist_thenReturnTimetableJson() throws Exception {
 
@@ -194,6 +261,52 @@ public class TimetableControllerUnitTests {
                 .andExpect(jsonPath("$.artists[0].artist", is("Artist2")))
                 .andExpect(jsonPath("$.artists[0].hour", is(1)))
                 .andExpect(jsonPath("$.artists[0].minute", is(30)));
+    }
+
+    @Test
+    public void whenUpdateEventlist_thenReturnTimetableJson() throws Exception {
+
+        Artist updatedArtist = new Artist("Event1", "Artist1", 23, 0);
+
+        // GET Artist1 from Event1
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + artistServiceBaseUrl + "/artists/Artist1/event/Event1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(artist1Event1))
+                );
+
+        // PUT artist 1 from event 1 with new hour of 23
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + artistServiceBaseUrl + "/artists")))
+                .andExpect(method(HttpMethod.PUT))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(updatedArtist))
+                );
+
+        // GET Event 1 info
+        mockServer.expect(ExpectedCount.once(),
+                requestTo(new URI("http://" + eventServiceBaseUrl + "/events/Event1")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.writeValueAsString(event1))
+                );
+
+        mockMvc.perform(put("/eventlists")
+                .param("eventName", updatedArtist.getEvent())
+                .param("artistName", updatedArtist.getArtist())
+                .param("hour", updatedArtist.getHour().toString())
+                .param("minute", updatedArtist.getMinute().toString())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventName", is("Event1")))
+                .andExpect(jsonPath("$.organizer", is("Organizer1")))
+                .andExpect(jsonPath("$.artists[0].artist", is("Artist1")))
+                .andExpect(jsonPath("$.artists[0].hour", is(23)));
+
     }
 
     @Test
