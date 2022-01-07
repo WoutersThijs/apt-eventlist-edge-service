@@ -246,8 +246,6 @@ public class TimetableControllerUnitTests {
                         .body(mapper.writeValueAsString(artist2Event2))
                 );
 
-
-
         mockMvc.perform(post("/eventlists")
                 .param("eventName", artist2Event2.getEvent())
                 .param("artist", artist2Event2.getArtist())
