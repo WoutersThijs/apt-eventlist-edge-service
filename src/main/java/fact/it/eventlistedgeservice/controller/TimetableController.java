@@ -70,10 +70,10 @@ public class TimetableController {
         return returnList;
     }
 
-    @GetMapping("/eventlists/{artist}")
+    @GetMapping("/eventlists/artist/{artistName}")
     public List<Timetable> getEventlistsByArtist(@PathVariable String artist){
         List<Timetable> returnList = new ArrayList();
-        ResponseEntity<List<Artist>> responseEntityArtists = restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/{artist}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>(){}, artist);
+        ResponseEntity<List<Artist>> responseEntityArtists = restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists/{artistName}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Artist>>(){}, artist);
         List<Artist> artists = responseEntityArtists.getBody();
         for (Artist artist1: artists){
             Event event = restTemplate.getForObject("http://" + eventServiceBaseUrl + "/events/{eventName}", Event.class, artist1.getEvent());
@@ -99,7 +99,7 @@ public class TimetableController {
         return new Timetable(event, artist);
     }
 
-//    @PutMapping("/eventlists")
+    @PutMapping("/eventlists")
 
     @DeleteMapping("eventlists/{artistName}/event/{eventName}")
     public ResponseEntity deleteEventlist(@PathVariable String eventName, @PathVariable String artistName){
