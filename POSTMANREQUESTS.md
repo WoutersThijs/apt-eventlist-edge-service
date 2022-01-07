@@ -8,6 +8,8 @@
 ![APT GET /Eventlists/artist/Artist1](src/assets/APTGETEventlistsEventEvent1.png)
 
 ### GET /eventlists/organizer/Organizer2
-![APT GET /Eventlists/artist/Artist1](src/assets/APTGETEventlistsOrganizerOrganizer2.png)
+![APT GET /Eventlists/organizer/Organizer2](src/assets/APTGETEventlistsOrganizerOrganizer2.png)
 
 ### POST /eventlists
+![APT POST /Eventlists](src/assets/APTPOSTEventlists.png)
+
