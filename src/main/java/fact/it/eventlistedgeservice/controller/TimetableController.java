@@ -105,10 +105,6 @@ public class TimetableController {
         Artist artist = restTemplate.getForObject("http://" + artistServiceBaseUrl + "/artists/" + artistName + "/event/" + eventName,
                 Artist.class);
 
-        if(artist == null){
-            artist = new Artist(eventName, artistName, hour, minute);
-        }
-
         artist.setHour(hour);
         artist.setMinute(minute);
 
