@@ -98,7 +98,7 @@ public class TimetableControllerUnitTests {
                         .body(mapper.writeValueAsString(event2))
                 );
 
-        mockMvc.perform(get("/eventlists/{artist}", "Artist1"))
+        mockMvc.perform(get("/eventlists/artist/{artistName}", "Artist1"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
