@@ -16,5 +16,8 @@
 ### PUT /eventlists?eventName=Event3&artistName=Artist1&hour=22&minute=30
 ![APT PUT /eventlists?eventName=Event3&artistName=Artist1&hour=22&minute=30](src/assets/APTPUTEventlists.png)
 
-### DELETE /eventlists/Artist1/event/Event3
-![APT DELETE /eventlists/Artist1/event/Event3](src/assets/APTDELETEEventlists.png)
+### DELETE /eventlists/artist/Artist1/event/Event3
+![APT DELETE /eventlists/artist/Artist1/event/Event3](src/assets/APTDELETEEventlistsArtist.png)
+
+### DELETE /eventlists/event/Event3
+![APT DELETE /eventlists/event/Event3](src/assets/APTDELETEEventlistsEvent.png)
