@@ -14,4 +14,4 @@ Op de edge service komen deze 2 back-end services samen om een volledige timetab
 ![APT SwaggerUI](src/assets/APTSwagger.png)
 
 ## Postman Requests on Edge
-Link to postman requests file:[Postman Requests](POSTMANREQUESTS.md)
+Link to Postman requests file: [Postman Requests](POSTMANREQUESTS.md)
