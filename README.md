@@ -11,4 +11,4 @@ Op de edge service komen deze 2 back-end services samen om een volledige timetab
 ![APT Diagram](src/assets/APTDiagram.png)
 
 ## Swagger UI
-![APT SwaggerUI](src/assets/APTSwaggerUI.png)
+![APT SwaggerUI](src/assets/APTSwagger.png)
