@@ -6,6 +6,7 @@ import fact.it.eventlistedgeservice.model.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -100,6 +101,23 @@ public class TimetableController {
     }
 
     @PutMapping("/eventlists")
+    public Timetable updateEventList(@RequestParam String eventName, @RequestParam String artistName, @RequestParam Integer hour, @RequestParam Integer minute){
+        Artist artist = restTemplate.getForObject("http://" + artistServiceBaseUrl + "/artists/" + artistName + "/event/" + eventName,
+                Artist.class);
+
+        artist.setHour(hour);
+        artist.setMinute(minute);
+
+        ResponseEntity<Artist> responseEntityArtist =
+                restTemplate.exchange("http://" + artistServiceBaseUrl + "/artists", HttpMethod.PUT, new HttpEntity<>(artist), Artist.class);
+
+        Artist retrievedArtist = responseEntityArtist.getBody();
+
+        Event event = restTemplate.getForObject("http://" + eventServiceBaseUrl + "/events/{eventName}",
+                Event.class, eventName);
+
+        return new Timetable(event, retrievedArtist);
+    }
 
     @DeleteMapping("eventlists/{artistName}/event/{eventName}")
     public ResponseEntity deleteEventlist(@PathVariable String eventName, @PathVariable String artistName){
